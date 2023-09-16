@@ -32,7 +32,7 @@ function ListHeader() {
   };
 
   return (
-    <header className="header">
+    <header>
       <h1>todos</h1>
       <form onSubmit={onSubmit}>
         <input
