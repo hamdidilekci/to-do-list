@@ -8,7 +8,6 @@ export const useListItems = () => {
 
 export const ListItemsProvider = ({ children }) => {
   const [listItems, setListItems] = useState([]);
-  console.log("listItems", listItems);
 
   return (
     <ListItemsContext.Provider value={{ listItems, setListItems }}>
