@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 import mongoose from "mongoose";
 
-import authenticate from './common/authenticate.js'
+import authenticate from './middleware/authenticate.js'
 import routes from './routes/index.js'
 
 const {DATABASE_USERNAME,DATABASE_PASSWORD, DATABASE_URL} = process.env
