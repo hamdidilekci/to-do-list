@@ -1,8 +1,10 @@
-import Home from "./pages/Home.jsx";
+import React from "react";
+import List from "./components/list/List.jsx";
+
 function App() {
   return (
-    <div>
-      <Home />
+    <div style={{ minHeight: "700px" }}>
+      <List />
     </div>
   );
 }
