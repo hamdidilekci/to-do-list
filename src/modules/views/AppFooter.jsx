@@ -1,15 +1,14 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
+import TextField from "../../components/TextField.jsx";
+import Typography from "../../components/Typography.jsx";
 
 const footerContainerStyle = {
-  backgroundColor: "#28282a",
+  backgroundColor: "#3874CB",
   color: "common.white",
-  paddingBottom: "20px",
 };
 
 const copyrightStyle = {
@@ -32,7 +31,7 @@ const LANGUAGES = [
 
 export default function AppFooter() {
   return (
-    <Box sx={footerContainerStyle}>
+    <Stack sx={footerContainerStyle}>
       <Container maxWidth="lg">
         <Grid
           container
@@ -41,7 +40,7 @@ export default function AppFooter() {
           spacing={2}
         >
           <Grid item xs={12} sm={4}>
-            <Box sx={copyrightStyle}>
+            <Stack sx={copyrightStyle}>
               {"© "}
               <Link
                 href="https://www.linkedin.com/in/dilekcihamdi/"
@@ -50,7 +49,7 @@ export default function AppFooter() {
                 Hamdi DİLEKÇİ{" "}
               </Link>
               {new Date().getFullYear()}
-            </Box>
+            </Stack>
           </Grid>
 
           <Grid item xs={12} sm={4}>
@@ -83,6 +82,6 @@ export default function AppFooter() {
           </Grid>
         </Grid>
       </Container>
-    </Box>
+    </Stack>
   );
 }
