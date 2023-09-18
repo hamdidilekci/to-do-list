@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
-import { IconButton, Button, Modal } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { useListItems } from "../ListItemsContext.jsx";
 import { useBackend } from "../../../backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
@@ -95,16 +95,18 @@ export default function ListTable() {
       width: 90,
       renderCell: (params) => (
         <span>
-          <IconButton
-            style={{
-              color: params.row.completed === true ? "green" : "red",
-            }}
-            onClick={() => {
-              toggleStatus(params.row);
-            }}
-          >
-            <Brightness1Icon />
-          </IconButton>
+          <Tooltip title="Toggle Complete-Active">
+            <IconButton
+              style={{
+                color: params.row.completed === true ? "green" : "red",
+              }}
+              onClick={() => {
+                toggleStatus(params.row);
+              }}
+            >
+              <Brightness1Icon />
+            </IconButton>
+          </Tooltip>
         </span>
       ),
     },
@@ -115,20 +117,24 @@ export default function ListTable() {
       renderCell: (params) => {
         return (
           <div>
-            <IconButton
-              onClick={() => {
-                handleDeleteTask(params.row.id);
-              }}
-            >
-              <DeleteForeverIcon sx={{ color: "red" }} />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                handleEditTask(params.row.id);
-              }}
-            >
-              <EditIcon sx={{ color: "green" }} />
-            </IconButton>
+            <Tooltip title="Delete Task">
+              <IconButton
+                onClick={() => {
+                  handleDeleteTask(params.row.id);
+                }}
+              >
+                <DeleteForeverIcon sx={{ color: "red" }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit Task">
+              <IconButton
+                onClick={() => {
+                  handleEditTask(params.row.id);
+                }}
+              >
+                <EditIcon sx={{ color: "green" }} />
+              </IconButton>
+            </Tooltip>
             <UpdateListItemModal
               open={open}
               handleClose={handleCloseModal}
