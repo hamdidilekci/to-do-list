@@ -7,10 +7,27 @@ export const useListItems = () => {
 };
 
 export const ListItemsProvider = ({ children }) => {
-  const [listItems, setListItems] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("");
+  const [category, setCategory] = useState("");
+  const [completed, setCompleted] = useState(false);
 
   return (
-    <ListItemsContext.Provider value={{ listItems, setListItems }}>
+    <ListItemsContext.Provider
+      value={{
+        title,
+        setTitle,
+        description,
+        setDescription,
+        priority,
+        setPriority,
+        category,
+        setCategory,
+        completed,
+        setCompleted,
+      }}
+    >
       {children}
     </ListItemsContext.Provider>
   );
