@@ -1,50 +1,125 @@
-import { useState, useRef } from "react";
-import "./list-header.css";
+import React from "react";
+import Swal from "sweetalert2";
+import { useBackend } from "../../../backend-context.jsx";
 
-import { useListItems } from "../ListItemsContext";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import { Stack } from "@mui/material";
+import PrioritySelect from "../PrioritySelect.jsx";
+import CategorySelect from "../CategorySelect.jsx";
+import { useListItems } from "../ListItemsContext.jsx";
 
 function ListHeader() {
-  const { listItems, setListItems } = useListItems();
+  // get list items from the comntext
+  const {
+    title,
+    setTitle,
+    description,
+    setDescription,
+    priority,
+    setPriority,
+    category,
+    setCategory,
+    completed,
+  } = useListItems();
 
-  // Autofocus to input when page first render
-  const ref = useRef(null);
+  const backend = useBackend();
 
-  const initialInputValue = "";
-  const [input, setInput] = useState(initialInputValue);
-
-  const onChangeInput = (e) => {
-    setInput(e.target.value);
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setPriority("");
+    setCategory("");
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (input === "") return false;
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      // Check if any field is empty before submitting
+      if (!title || !priority || !category) {
+        alert("Please fill in all fields");
+        return;
+      }
 
-    const value = {
-      name: input,
-      isCompleted: false,
-      isVisible: true,
-      isEditing: false,
-    };
+      const formData = {
+        title,
+        description,
+        priority,
+        category,
+        completed,
+      };
 
-    setListItems([...listItems, value]);
-    setInput(initialInputValue);
+      // Send a POST request to backend endpoint with the form values
+      console.log("formData", formData);
+      const response = await backend.post("todos", formData);
+
+      // console.log('response', response);
+      //{
+      //     "todo": {
+      //       "userId": "65087ecb792ba2fdbf00890a",
+      //       "title": "fweewf",
+      //       "description": "ewqe",
+      //       "priority": "Medium",
+      //       "category": "Home",
+      //       "completed": false,
+      //       "_id": "65088221cece9a812ccdad39",
+      //       "createdAt": "2023-09-18T17:00:17.469Z",
+      //       "updatedAt": "2023-09-18T17:00:17.469Z"
+      //   }
+      // }
+
+      if (response.todo?._id) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Todo item created!",
+        });
+        resetForm();
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   };
 
   return (
-    <header>
-      <h1>todos</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          value={input}
-          onChange={onChangeInput}
-          className="new-todo"
-          placeholder="What needs to be done?"
-          autoFocus
-          ref={ref}
+    <FormControl sx={{ display: "flex", marginTop: "40px" }}>
+      <Stack sx={{ marginBottom: "20px" }} spacing={2}>
+        <TextField
+          type="text"
+          size="small"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
         />
-      </form>
-    </header>
+        <TextField
+          type="text"
+          size="small"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+        />
+      </Stack>
+      <Stack sx={{ marginBottom: "20px" }} spacing={4}>
+        {/* PrioritySelect component */}
+        <PrioritySelect priority={priority} setPriority={setPriority} />
+      </Stack>
+      <Stack>
+        {/* CategorySelect component */}
+        <CategorySelect category={category} setCategory={setCategory} />
+      </Stack>
+      <Box>
+        <Button variant="outlined" onClick={handleSubmit}>
+          Add Task
+        </Button>
+      </Box>
+    </FormControl>
   );
 }
 
