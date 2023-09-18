@@ -92,11 +92,10 @@ class Backend {
     return data;
   }
 
-  async delete(url, params, contentType = "json", authorized = true) {
+  async delete(url) {
     const response = await fetch(this.getURL(url), {
       method: "DELETE",
-      headers: await this.getHeaders(authorized),
-      body: params ? JSON.stringify(params) : null,
+      headers: await this.getHeaders(true),
     });
 
     if (!response.ok) {
