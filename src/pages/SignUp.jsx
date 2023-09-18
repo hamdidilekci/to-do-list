@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
@@ -12,6 +13,8 @@ import FormFeedback from "../modules/form/FormFeedback.jsx";
 
 function SignUp() {
   const [sent, setSent] = React.useState(false);
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const validate = (values) => {
     const errors = required(
@@ -29,9 +32,24 @@ function SignUp() {
     return errors;
   };
 
-  const handleSubmit = () => {
-    console.log("submit", sent);
-    // setSent(true);
+  const handleSubmit = async (values) => {
+    try {
+      setSent(true);
+      // Send a POST request to backend endpoint with the form values
+      const response = await axios.post(`${backendUrl}/auth/sign-up`, values);
+      // Check the response status and handle it accordingly
+      if (response.status === 200) {
+        // navigate to home page
+        window.location.href = "http://localhost:5173/";
+        setSent(false);
+      } else {
+        // Handle errors or other response statuses here
+        console.error("Form submission failed:", response.data);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions here
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (

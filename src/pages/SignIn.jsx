@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 import { Field, Form, FormSpy } from "react-final-form";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -11,6 +13,8 @@ import FormFeedback from "../modules/form/FormFeedback.jsx";
 
 function SignIn() {
   const [sent, setSent] = React.useState(false);
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const validate = (values) => {
     const errors = required(["email", "password"], values);
@@ -25,8 +29,30 @@ function SignIn() {
     return errors;
   };
 
-  const handleSubmit = () => {
-    setSent(true);
+  const handleSubmit = async (values) => {
+    try {
+      setSent(true);
+      // Send a POST request to backend endpoint with the form values
+      const response = await axios.post(`${backendUrl}/auth/sign-in`, values);
+      console.log("--- try --- response -- ", response.data);
+
+      // Successful sign-in redirecting to the home page.
+      if (response.status === 200) {
+        window.location.href = "http://localhost:5173/";
+        setSent(false);
+      } else {
+        console.log("error response", response.message);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions here
+      console.error("Error submitting form:", error);
+      // Show a generic error message to the user
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   };
 
   return (
