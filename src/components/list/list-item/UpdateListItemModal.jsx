@@ -45,7 +45,6 @@ const BasicModal = ({ open, handleClose, task }) => {
     };
 
     // Send a POST request to backend endpoint with the form values
-    console.log("formData", formData);
     const response = await backend.post(`todos/${task.id}`, formData);
 
     if (response._id) {

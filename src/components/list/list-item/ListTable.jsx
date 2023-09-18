@@ -25,17 +25,13 @@ export default function ListTable() {
           return row;
         }
       });
-      console.log("taks", task);
       setRows(_rows);
     }
     setOpen(false);
   };
 
   const handleDeleteTask = async (id) => {
-    console.log("delete");
-
     const response = await backend.delete(`todos/${id}`);
-    console.log("response delete", response);
     if (response._id) {
       const _rows = [...rows];
 
