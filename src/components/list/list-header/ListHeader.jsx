@@ -46,7 +46,6 @@ function ListHeader() {
     };
 
     // Send a POST request to backend endpoint with the form values
-    console.log("formData", formData);
     const response = await backend.post("todos", formData);
 
     if (response._id) {

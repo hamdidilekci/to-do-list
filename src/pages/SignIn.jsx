@@ -35,8 +35,6 @@ function SignIn() {
     await backend
       .post("auth/sign-in", values, false)
       .then((response) => {
-        console.log("status", response);
-
         // save user data and token to cache
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("user", JSON.stringify(response.user));
