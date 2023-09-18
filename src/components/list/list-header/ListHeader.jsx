@@ -87,7 +87,7 @@ function ListHeader() {
         {/* CategorySelect component */}
         <CategorySelect category={category} setCategory={setCategory} />
       </Stack>
-      <Box>
+      <Box sx={{ marginBottom: "20px" }}>
         <Button variant="outlined" onClick={handleSubmit}>
           Add Task
         </Button>
