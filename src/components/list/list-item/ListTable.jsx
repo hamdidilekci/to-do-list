@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import Swal from "sweetalert2";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
 import { IconButton, Button } from "@mui/material";
 import { useListItems } from "../ListItemsContext.jsx";
+import { useBackend } from "../../../backend-context.jsx";
 
 export default function ListTable() {
-  const { setCompleted } = useListItems();
+  const { rows, setRows } = useListItems();
+
+  const backend = useBackend();
 
   const handleDeleteTask = () => {
     console.log("delete");
@@ -19,17 +21,10 @@ export default function ListTable() {
   };
 
   const toggleStatus = (isCompleted) => {
-    if (isCompleted === true) {
-      return setCompleted(false);
-    }
-
-    if (isCompleted === false) {
-      return setCompleted(true);
-    }
+    console.log("toggle", isCompleted);
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 30 },
     { field: "title", headerName: "Title", width: 90 },
     { field: "description", headerName: "Description", width: 350 },
     {
@@ -52,7 +47,11 @@ export default function ListTable() {
             color: params.row.completed === true ? "green" : "red",
           }}
         >
-          <IconButton onClick={toggleStatus(params.row.completed)}>
+          <IconButton
+            onClick={() => {
+              toggleStatus(params.row.completed);
+            }}
+          >
             <Brightness1Icon />
           </IconButton>
         </span>
@@ -77,82 +76,18 @@ export default function ListTable() {
     },
   ];
 
-  const rows = [
-    {
-      id: "65075e0e82ee05a41ca5b50c",
-      userId: "65075d6c82ee05a41ca5b503",
-      title: "ofis",
-      description: "sandalye, masa, kağıt",
-      priority: "gereksiz",
-      category: "ofis alışverişi",
-      completed: false,
-      createdAt: "2023-09-17T20:14:06.675Z",
-      updatedAt: "2023-09-17T20:14:06.675Z",
-    },
-    {
-      id: "65075e3f82ee05a41ca5b50f",
-      userId: "65075d6c82ee05a41ca5b503",
-      title: "araba",
-      description: "yıllık bakım yapılacak",
-      priority: "çok önemli",
-      category: "bakım",
-      completed: false,
-      createdAt: "2023-09-17T20:14:55.139Z",
-      updatedAt: "2023-09-17T20:14:55.139Z",
-    },
-  ];
+  useEffect(() => {
+    backend.get("todos").then((todos) => {
+      todos = todos.map((todo) => {
+        return {
+          id: todo._id,
+          ...todo,
+        };
+      });
 
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     title: "bakım",
-  //     description: "senelik bakım yapılacak",
-  //     priority: "çok önemli",
-  //     category: "araç",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "mutfak",
-  //     description: "alışveriş yapılacak",
-  //     priority: "çok önemli",
-  //     category: "gıda",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "ofis",
-  //     description: "alışveriş yapılacak",
-  //     priority: "önemli",
-  //     category: "kırtasiye",
-  //     status: "completed",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "ev",
-  //     description: "halılar yıkamaya gönderilecek",
-  //     priority: "az önemli",
-  //     category: "gıda",
-  //     status: "completed",
-  //   },
-  // ];
-
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-  let todos;
-
-  // useEffect(async () => {
-  //   todos = await axios.get(`${backendUrl}/`).catch(async (error) => {
-  //     // Show a generic error message to the user
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Oops...",
-  //       text: error.response.data.message,
-  //     });
-  //   });
-  // }, []);
-
-  console.log("todos", todos);
+      setRows(todos);
+    });
+  }, []);
 
   return (
     <DataGrid
