@@ -31,43 +31,34 @@ function ListHeader() {
 
   // Handle form submission
   const handleSubmit = async () => {
-    try {
-      // Check if any field is empty before submitting
-      if (!title || !priority || !category) {
-        alert("Please fill in all fields");
-        return;
-      }
+    // Check if any field is empty before submitting
+    if (!title || !priority || !category) {
+      alert("Please fill in all fields");
+      return;
+    }
 
-      const formData = {
-        title,
-        description,
-        priority,
-        category,
-        completed: false,
-      };
+    const formData = {
+      title,
+      description,
+      priority,
+      category,
+      completed: false,
+    };
 
-      // Send a POST request to backend endpoint with the form values
-      console.log("formData", formData);
-      const response = await backend.post("todos", formData);
+    // Send a POST request to backend endpoint with the form values
+    console.log("formData", formData);
+    const response = await backend.post("todos", formData);
 
-      if (response.todo?._id) {
-        // Add new todo to the list
-        setRows([...rows, { ...response.todo, id: response.todo._id }]);
-        resetForm();
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Todo item created!",
-        });
-        resetForm();
-      }
-    } catch (error) {
-      console.log(error);
+    if (response._id) {
+      // Add new todo to the list
+      setRows([...rows, { ...response, id: response._id }]);
+
       Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: error.message,
+        icon: "success",
+        title: "Success!",
+        text: "Todo item created!",
       });
+      resetForm();
     }
   };
 
@@ -93,7 +84,7 @@ function ListHeader() {
         {/* PrioritySelect component */}
         <PrioritySelect priority={priority} setPriority={setPriority} />
       </Stack>
-      <Stack>
+      <Stack sx={{ marginBottom: "20px" }}>
         {/* CategorySelect component */}
         <CategorySelect category={category} setCategory={setCategory} />
       </Stack>
