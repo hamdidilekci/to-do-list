@@ -15,7 +15,7 @@ const CategorySelect = ({ category, setCategory }) => {
   };
 
   return (
-    <FormControl size="small" sx={{ m: 1, minWidth: 120 }}>
+    <FormControl size="small">
       <InputLabel id="category-select-label">Category</InputLabel>
       <Select
         labelId="category-select-label"
