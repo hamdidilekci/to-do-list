@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useBackend } from "../../../backend-context.jsx";
 
@@ -13,17 +13,12 @@ import { useListItems } from "../ListItemsContext.jsx";
 
 function ListHeader() {
   // get list items from the comntext
-  const {
-    title,
-    setTitle,
-    description,
-    setDescription,
-    priority,
-    setPriority,
-    category,
-    setCategory,
-    completed,
-  } = useListItems();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("");
+  const [category, setCategory] = useState("");
+
+  const { rows, setRows } = useListItems();
 
   const backend = useBackend();
 
@@ -48,29 +43,17 @@ function ListHeader() {
         description,
         priority,
         category,
-        completed,
+        completed: false,
       };
 
       // Send a POST request to backend endpoint with the form values
       console.log("formData", formData);
       const response = await backend.post("todos", formData);
 
-      // console.log('response', response);
-      //{
-      //     "todo": {
-      //       "userId": "65087ecb792ba2fdbf00890a",
-      //       "title": "fweewf",
-      //       "description": "ewqe",
-      //       "priority": "Medium",
-      //       "category": "Home",
-      //       "completed": false,
-      //       "_id": "65088221cece9a812ccdad39",
-      //       "createdAt": "2023-09-18T17:00:17.469Z",
-      //       "updatedAt": "2023-09-18T17:00:17.469Z"
-      //   }
-      // }
-
       if (response.todo?._id) {
+        // Add new todo to the list
+        setRows([...rows, { ...response.todo, id: response.todo._id }]);
+        resetForm();
         Swal.fire({
           icon: "success",
           title: "Success!",
