@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import { Field, Form, FormSpy } from "react-final-form";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -13,7 +13,7 @@ import { useBackend } from "../backend-context.jsx";
 
 function SignIn() {
   const [sent, setSent] = React.useState(false);
-
+  const navigateTo = useNavigate();
   const backend = useBackend();
 
   const validate = (values) => {
@@ -40,7 +40,7 @@ function SignIn() {
         localStorage.setItem("user", JSON.stringify(response.user));
 
         // Successful sign-in redirecting to the home page.
-        window.location.href = "http://localhost:5173/";
+        navigateTo("http://localhost:5173/");
       })
       .finally(() => {
         setSent(false);
