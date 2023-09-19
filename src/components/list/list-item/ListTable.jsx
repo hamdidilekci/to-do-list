@@ -19,6 +19,7 @@ import { useListItems } from "../ListItemsContext.jsx";
 import { useBackend } from "../../../backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
 import isCustomISO8601 from "./is-date-ISO8601.js";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,7 +27,6 @@ export default function ListTable() {
   const { rows, setRows } = useListItems();
   const backend = useBackend();
 
-  const [reminders, setReminders] = useState([]);
   const [reminderOpen, setReminderOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [reminderDate, setReminderDate] = useState(null);
@@ -133,29 +133,29 @@ export default function ListTable() {
   };
 
   const columns = [
-    { field: "title", headerName: "Title", width: 90 },
-    { field: "description", headerName: "Description", width: 350 },
+    { field: "title", headerName: "Title", flex: 1 },
+    { field: "description", headerName: "Description", flex: 1 },
     {
       field: "priority",
       headerName: "Priority",
-      width: 90,
+      width: 80,
     },
     {
       field: "category",
       headerName: "Category",
-      width: 90,
+      width: 80,
     },
     {
       field: "createdAt",
       headerName: "Created At",
       type: "date",
-      width: 90,
+      width: 115,
       valueGetter: ({ value }) => value && new Date(value),
     },
     {
       field: "status",
       headerName: "Status",
-      width: 90,
+      width: 80,
       renderCell: (params) => (
         <span>
           <Tooltip title="Toggle Complete-Active">
@@ -221,7 +221,6 @@ export default function ListTable() {
                   type="datetime-local"
                   value={reminderDate}
                   onChange={handleReminderDateChange}
-                  fullWidth
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -240,8 +239,8 @@ export default function ListTable() {
     },
   ];
 
+  // get all todos when page loaded
   useEffect(() => {
-    // get all todos
     backend.get("todos").then((todos) => {
       todos = todos.map((todo) => {
         return {
@@ -252,41 +251,41 @@ export default function ListTable() {
 
       setRows(todos);
     });
-
-    // get reminders
-    backend.get("reminder").then((dbReminders) => {
-      console.log("dbReminders", dbReminders);
-      dbReminders = dbReminders.map((reminder) => {
-        return {
-          id: reminder._id,
-          ...reminder,
-        };
-      });
-
-      setReminders(dbReminders);
-    });
-
-    // Check if reminders array is not empty
-    if (reminders.length > 0) {
-      // Show toast notification for each reminder
-      reminders.forEach((reminder) => {
-        toast(`Reminder for task: ${reminder.taskTitle}`, {
-          position: "top-right",
-          autoClose: 5000, // Duration of the notification in milliseconds
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      });
-    }
   }, []);
 
-  console.log("reminders", reminders);
+  // show notifications if any
+  let isToasting = false;
+  useEffect(() => {
+      if (!isToasting) {
+        isToasting = true;
+        // get reminders
+        backend.get("reminder").then((dbReminders) => {
+          // Check if reminders array is not empty
+          if (dbReminders.length > 0 ) {
+            // Show toast notification for each reminder
+              dbReminders.forEach((reminder) => {
+
+                toast(`Reminder for task: ${reminder.taskTitle}`, {
+                  position: "top-right",
+                  autoClose: 5000, // Duration of the notification in milliseconds
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                });
+
+              });
+          }
+        });
+      }
+  }, [])
+
 
   return (
-    <DataGrid
+    <>
+      <DataGrid
       autoHeight={true}
+      getRowHeight={() => 'auto'}
       rows={rows}
       columns={columns}
       initialState={{
@@ -296,5 +295,7 @@ export default function ListTable() {
       }}
       pageSizeOptions={[5, 10]}
     />
+    <ToastContainer />
+    </>
   );
 }

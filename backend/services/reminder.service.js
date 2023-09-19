@@ -1,6 +1,7 @@
 import Reminder from "../models/reminder.model.js";
 
-import { BadRequestError, NotFoundError } from "../common/errors.js";
+import { BadRequestError } from "../common/errors.js";
+import Todo from "../models/todo.model.js";
 
 export default class ReminderService {
   static async create(currentUser, { taskId, reminderDate }) {
@@ -28,18 +29,26 @@ export default class ReminderService {
     const currentDate = new Date(Date.now());
     currentDate.setHours(currentDate.getHours() + 3);
 
-    const dueReminders = await Reminder.find({
+    const _dueReminders = [];
+
+    await Reminder.find({
       reminderDate: { $lte: currentDate },
       isSent: false,
       userId: currentUser._id,
+    }).then(async (rm) => {
+      for (let i = 0; i < rm.length; i++) {
+        const task = await Todo.findById(rm[i].taskId).lean();
+        _dueReminders.push({
+          ...rm[i]._doc,
+          taskTitle: task.title,
+        });
+
+        // mark due reminders as sent
+        rm[i].isSent = true;
+        rm[i].save();
+      }
     });
 
-    // TODO: mark due reminders as sent
-    dueReminders.forEach((dueReminder) => {
-      dueReminder.isSent = true;
-      dueReminder.save();
-    });
-
-    return dueReminders;
+    return _dueReminders;
   }
 }
