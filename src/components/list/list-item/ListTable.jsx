@@ -19,10 +19,14 @@ import { useListItems } from "../ListItemsContext.jsx";
 import { useBackend } from "../../../backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
 import isCustomISO8601 from "./is-date-ISO8601.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ListTable() {
   const { rows, setRows } = useListItems();
+  const backend = useBackend();
 
+  const [reminders, setReminders] = useState([]);
   const [reminderOpen, setReminderOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [reminderDate, setReminderDate] = useState(null);
@@ -72,8 +76,6 @@ export default function ListTable() {
       console.error("Error setting reminder:", error);
     }
   };
-
-  const backend = useBackend();
 
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
@@ -159,7 +161,7 @@ export default function ListTable() {
           <Tooltip title="Toggle Complete-Active">
             <IconButton
               style={{
-                color: params.row.completed === true ? "green" : "red",
+                color: params.row.completed === true ? "green" : "grey",
               }}
               onClick={() => {
                 toggleStatus(params.row);
@@ -239,6 +241,7 @@ export default function ListTable() {
   ];
 
   useEffect(() => {
+    // get all todos
     backend.get("todos").then((todos) => {
       todos = todos.map((todo) => {
         return {
@@ -249,7 +252,37 @@ export default function ListTable() {
 
       setRows(todos);
     });
+
+    // get reminders
+    backend.get("reminder").then((dbReminders) => {
+      console.log("dbReminders", dbReminders);
+      dbReminders = dbReminders.map((reminder) => {
+        return {
+          id: reminder._id,
+          ...reminder,
+        };
+      });
+
+      setReminders(dbReminders);
+    });
+
+    // Check if reminders array is not empty
+    if (reminders.length > 0) {
+      // Show toast notification for each reminder
+      reminders.forEach((reminder) => {
+        toast(`Reminder for task: ${reminder.taskTitle}`, {
+          position: "top-right",
+          autoClose: 5000, // Duration of the notification in milliseconds
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
+    }
   }, []);
+
+  console.log("reminders", reminders);
 
   return (
     <DataGrid
