@@ -18,33 +18,49 @@ import {
 import { useListItems } from "../ListItemsContext.jsx";
 import { useBackend } from "../../../backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
+import isCustomISO8601 from "./is-date-ISO8601.js";
 
 export default function ListTable() {
   const { rows, setRows } = useListItems();
 
   const [reminderOpen, setReminderOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [reminderDateTime, setReminderDateTime] = useState(null);
+  const [reminderDate, setReminderDate] = useState(null);
 
   const handleSetReminder = (task) => {
     setSelectedTask(task);
     setReminderOpen(true);
   };
 
-  const handleReminderDateTimeChange = (event) => {
-    setReminderDateTime(event.target.value);
+  const handleReminderDateChange = (event) => {
+    setReminderDate(event.target.value);
   };
 
   const handleSaveReminder = async () => {
     try {
-      const response = await backend.post("reminders", {
+      // Validate the reminder date-time format
+      if (!isCustomISO8601(reminderDate)) {
+        // The input is not in the expected format
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Format",
+          text: "Please enter a valid date and time in the format YYYY-MM-DDTHH:mm",
+        });
+        return;
+      }
+
+      // Convert the selected reminderDate to UTC
+      const utcDate = new Date(reminderDate);
+
+      // Continue with saving the reminder...
+      const response = await backend.post("reminder", {
         taskId: selectedTask.id,
-        reminderDateTime: reminderDateTime,
+        reminderDate: utcDate,
       });
 
       if (response._id) {
         setReminderOpen(false);
-        // Optionally, you can show a success message.
+        // Success message
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -52,7 +68,7 @@ export default function ListTable() {
         });
       }
     } catch (error) {
-      // Handle errors, e.g., show an error message.
+      // Handle errors
       console.error("Error setting reminder:", error);
     }
   };
@@ -201,8 +217,8 @@ export default function ListTable() {
                   size="medium"
                   label="Date and Time"
                   type="datetime-local"
-                  value={reminderDateTime}
-                  onChange={handleReminderDateTimeChange}
+                  value={reminderDate}
+                  onChange={handleReminderDateChange}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
