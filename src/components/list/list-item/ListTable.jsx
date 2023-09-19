@@ -4,13 +4,58 @@ import { DataGrid } from "@mui/x-data-grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import Brightness1Icon from "@mui/icons-material/Brightness1";
-import { IconButton, Tooltip } from "@mui/material";
+import AlarmIcon from "@mui/icons-material/Alarm";
+import {
+  IconButton,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from "@mui/material";
 import { useListItems } from "../ListItemsContext.jsx";
 import { useBackend } from "../../../backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
 
 export default function ListTable() {
   const { rows, setRows } = useListItems();
+
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [reminderDateTime, setReminderDateTime] = useState(null);
+
+  const handleSetReminder = (task) => {
+    setSelectedTask(task);
+    setReminderOpen(true);
+  };
+
+  const handleReminderDateTimeChange = (event) => {
+    setReminderDateTime(event.target.value);
+  };
+
+  const handleSaveReminder = async () => {
+    try {
+      const response = await backend.post("reminders", {
+        taskId: selectedTask.id,
+        reminderDateTime: reminderDateTime,
+      });
+
+      if (response._id) {
+        setReminderOpen(false);
+        // Optionally, you can show a success message.
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Reminder set!",
+        });
+      }
+    } catch (error) {
+      // Handle errors, e.g., show an error message.
+      console.error("Error setting reminder:", error);
+    }
+  };
 
   const backend = useBackend();
 
@@ -113,7 +158,7 @@ export default function ListTable() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 90,
+      width: 150,
       renderCell: (params) => {
         return (
           <div>
@@ -135,11 +180,42 @@ export default function ListTable() {
                 <EditIcon sx={{ color: "green" }} />
               </IconButton>
             </Tooltip>
+            <Tooltip title="Set Reminder">
+              <IconButton
+                onClick={() => {
+                  handleSetReminder(params.row);
+                }}
+              >
+                <AlarmIcon sx={{ color: "blue" }} />
+              </IconButton>
+            </Tooltip>
             <UpdateListItemModal
               open={open}
               handleClose={handleCloseModal}
               task={params.row}
             />
+            <Dialog open={reminderOpen} onClose={() => setReminderOpen(false)}>
+              <DialogTitle>Set Reminder</DialogTitle>
+              <DialogContent>
+                <TextField
+                  size="medium"
+                  label="Date and Time"
+                  type="datetime-local"
+                  value={reminderDateTime}
+                  onChange={handleReminderDateTimeChange}
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setReminderOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveReminder} color="primary">
+                  Save
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         );
       },
