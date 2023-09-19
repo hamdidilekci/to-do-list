@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
@@ -13,7 +14,7 @@ import { useBackend } from "../backend-context.jsx";
 
 function SignUp() {
   const [sent, setSent] = React.useState(false);
-
+  const navigateTo = useNavigate();
   const backend = useBackend();
 
   const validate = (values) => {
@@ -39,7 +40,7 @@ function SignUp() {
       .post("auth/sign-up", values, false)
       .then(() => {
         // navigate to home page
-        window.location.href = "http://localhost:5173/";
+        navigateTo("http://localhost:5173/");
       })
       .finally(() => {
         setSent(false);
