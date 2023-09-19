@@ -70,7 +70,6 @@ class Backend {
   }
 
   async post(url, params, authorized = true) {
-    console.log({ url, params, authorized });
     const headers = await this.getHeaders(authorized);
     const response = await fetch(this.getURL(url), {
       method: "POST",
