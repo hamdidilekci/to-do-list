@@ -15,12 +15,16 @@ import Toolbar from "../../components/ToolBar.jsx";
 import Typography from "../../components/Typography.jsx";
 import Button from "../../components/Button.jsx";
 
-const pages = ["Sign In", "Sign Up"];
-const settings = ["Profile", "Dashboard", "Logout"];
-
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const isTokenPresent = localStorage.getItem("token") !== null;
+
+  const settings = isTokenPresent
+    ? ["Profile", "Dashboard", "Logout"]
+    : ["Profile", "Dashboard", "Login"];
+  const pages = ["Sign In", "Sign Up"];
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -48,9 +52,13 @@ function ResponsiveAppBar() {
         navigateTo("/Dashboard");
         break;
       case "Logout":
-        // Clear local storage and log the user out
-        localStorage.clear();
-        // Redirect the user to the sign-in page or any other desired page
+        // Clear the token on logout
+        localStorage.removeItem("token");
+        // Navigate to the sign-in page
+        navigateTo("/Sign In");
+        break;
+      case "Login":
+        // Navigate to the sign-in page
         navigateTo("/Sign In");
         break;
       default:
@@ -111,18 +119,19 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                      <Link
-                        style={{ textDecoration: "none", color: "white" }}
-                        to={`/${page}`}
-                      >
-                        {page}
-                      </Link>
-                    </Typography>
-                  </MenuItem>
-                ))}
+                {!isTokenPresent &&
+                  pages.map((page) => (
+                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        <Link
+                          style={{ textDecoration: "none", color: "white" }}
+                          to={`/${page}`}
+                        >
+                          {page}
+                        </Link>
+                      </Typography>
+                    </MenuItem>
+                  ))}
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -145,20 +154,21 @@ function ResponsiveAppBar() {
               HD
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  <Link
-                    style={{ textDecoration: "none", color: "white" }}
-                    to={`${page}`}
+              {!isTokenPresent &&
+                pages.map((page) => (
+                  <Button
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
                   >
-                    {page}
-                  </Link>
-                </Button>
-              ))}
+                    <Link
+                      style={{ textDecoration: "none", color: "white" }}
+                      to={`${page}`}
+                    >
+                      {page}
+                    </Link>
+                  </Button>
+                ))}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
