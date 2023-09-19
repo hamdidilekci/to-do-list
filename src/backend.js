@@ -92,6 +92,28 @@ class Backend {
     return data;
   }
 
+  async put(url, params, authorized = true) {
+    const headers = await this.getHeaders(authorized);
+    const response = await fetch(this.getURL(url), {
+      method: "PUT",
+      headers,
+      body: params ? JSON.stringify(params) : null,
+    });
+
+    if (!response.ok) {
+      const { name, message } = await response.json();
+      Swal.fire({
+        icon: "error",
+        title: name,
+        text: message,
+      });
+    }
+
+    const data = await response.json();
+
+    return data;
+  }
+
   async delete(url) {
     const response = await fetch(this.getURL(url), {
       method: "DELETE",
