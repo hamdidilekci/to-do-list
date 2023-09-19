@@ -1,7 +1,7 @@
 import ListHeader from "./list-header/ListHeader.jsx";
 import ListTable from "./list-item/ListTable.jsx";
 
-import { Container, Stack, Box } from "@mui/material";
+import { Container } from "@mui/material";
 
 function List() {
   return (
