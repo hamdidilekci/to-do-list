@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -22,12 +22,20 @@ const style = {
 };
 
 const BasicModal = ({ open, handleClose, task }) => {
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [priority, setPriority] = useState(task.priority);
-  const [category, setCategory] = useState(task.category);
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
+  const [priority, setPriority] = useState();
+  const [category, setCategory] = useState();
 
   const backend = useBackend();
+
+  // update state when task prop changes
+  useEffect(() => {
+    setTitle(task.title || "");
+    setDescription(task.description || "");
+    setPriority(task.priority || "High");
+    setCategory(task.category || "Home");
+  }, [task.id]);
 
   // Handle form submission
   const handleSubmit = async () => {
@@ -87,11 +95,23 @@ const BasicModal = ({ open, handleClose, task }) => {
               {/* CategorySelect component */}
               <CategorySelect category={category} setCategory={setCategory} />
             </Stack>
-            <Box>
-              <Button variant="outlined" onClick={handleSubmit}>
-                Update Task
-              </Button>
-            </Box>
+            <Stack
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <Box>
+                <Button variant="outlined" onClick={handleSubmit}>
+                  Update Task
+                </Button>
+              </Box>
+              <Box sx={{ marginLeft: "auto" }}>
+                <Button variant="outlined" onClick={handleClose}>
+                  Cancel
+                </Button>
+              </Box>
+            </Stack>
           </FormControl>
         </Box>
       </Modal>
