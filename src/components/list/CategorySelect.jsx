@@ -20,13 +20,11 @@ const CategorySelect = ({ category, setCategory }) => {
       <Select
         labelId="category-select-label"
         id="category-select"
+        name="category"
         value={category}
         label="Category"
         onChange={handleChange}
       >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
         <MenuItem value={"Home"}>Home</MenuItem>
         <MenuItem value={"Work"}>Work</MenuItem>
         <MenuItem value={"School"}>School</MenuItem>
