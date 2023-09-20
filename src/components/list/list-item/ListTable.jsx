@@ -28,8 +28,31 @@ export default function ListTable() {
   const backend = useBackend();
 
   const [reminderOpen, setReminderOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [reminderDate, setReminderDate] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  const [selectedTaskToEdit, setSelectedTaskToEdit] = useState("");
+  const [selectedTask, setSelectedTask] = useState("");
+  const [reminderDate, setReminderDate] = useState("");
+
+  const handleEditModalOpen = (task) => {
+    setSelectedTaskToEdit(task);
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = (task) => {
+    if (task) {
+      const _rows = rows.map((row) => {
+        if (row.id === task.id) {
+          return task;
+        } else {
+          return row;
+        }
+      });
+      setRows(_rows);
+    }
+    setEditModalOpen(false);
+    setSelectedTask("");
+  };
 
   const handleSetReminder = (task) => {
     setSelectedTask(task);
@@ -77,22 +100,6 @@ export default function ListTable() {
     }
   };
 
-  const [open, setOpen] = useState(false);
-  const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = (task) => {
-    if (task) {
-      const _rows = rows.map((row) => {
-        if (row.id === task.id) {
-          return task;
-        } else {
-          return row;
-        }
-      });
-      setRows(_rows);
-    }
-    setOpen(false);
-  };
-
   const handleDeleteTask = async (id) => {
     const response = await backend.delete(`todos/${id}`);
     if (response._id) {
@@ -107,10 +114,6 @@ export default function ListTable() {
         text: "Task deleted!",
       });
     }
-  };
-
-  const handleEditTask = () => {
-    handleOpenModal();
   };
 
   const toggleStatus = async (task) => {
@@ -156,15 +159,15 @@ export default function ListTable() {
       field: "status",
       headerName: "Status",
       width: 80,
-      renderCell: (params) => (
+      renderCell: ({ row }) => (
         <span>
           <Tooltip title="Toggle Complete-Active">
             <IconButton
               style={{
-                color: params.row.completed === true ? "green" : "grey",
+                color: row.completed === true ? "green" : "grey",
               }}
               onClick={() => {
-                toggleStatus(params.row);
+                toggleStatus(row);
               }}
             >
               <Brightness1Icon />
@@ -177,13 +180,13 @@ export default function ListTable() {
       field: "actions",
       headerName: "Actions",
       width: 150,
-      renderCell: (params) => {
+      renderCell: ({ row }) => {
         return (
           <div>
             <Tooltip title="Delete Task">
               <IconButton
                 onClick={() => {
-                  handleDeleteTask(params.row.id);
+                  handleDeleteTask(row.id);
                 }}
               >
                 <DeleteForeverIcon sx={{ color: "red" }} />
@@ -192,7 +195,7 @@ export default function ListTable() {
             <Tooltip title="Edit Task">
               <IconButton
                 onClick={() => {
-                  handleEditTask(params.row.id);
+                  handleEditModalOpen(row);
                 }}
               >
                 <EditIcon sx={{ color: "green" }} />
@@ -201,16 +204,16 @@ export default function ListTable() {
             <Tooltip title="Set Reminder">
               <IconButton
                 onClick={() => {
-                  handleSetReminder(params.row);
+                  handleSetReminder(row);
                 }}
               >
                 <AlarmIcon sx={{ color: "blue" }} />
               </IconButton>
             </Tooltip>
             <UpdateListItemModal
-              open={open}
-              handleClose={handleCloseModal}
-              task={params.row}
+              open={editModalOpen}
+              handleClose={handleCloseEditModal}
+              task={selectedTaskToEdit}
             />
             <Dialog
               fullWidth
@@ -221,6 +224,7 @@ export default function ListTable() {
               <DialogContent>
                 <TextField
                   fullWidth
+                  id="datePicker"
                   label="Date and Time"
                   type="datetime-local"
                   value={reminderDate}
