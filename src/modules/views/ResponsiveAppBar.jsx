@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -13,31 +12,54 @@ import AdbIcon from "@mui/icons-material/Adb";
 import AppBar from "../../components/AppBar.jsx";
 import Toolbar from "../../components/ToolBar.jsx";
 import Typography from "../../components/Typography.jsx";
-import Button from "../../components/Button.jsx";
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigateTo = useNavigate();
 
   const isAuthenticated = localStorage.getItem("token") !== null;
 
   const settings = ["Profile", "Dashboard"];
-
   isAuthenticated ? settings.push("Logout") : settings.push("Login");
-  const pages = ["Sign In", "Sign Up"];
+
+  let pages = [];
+  !isAuthenticated
+    ? pages.push("Sign In", "Sign Up")
+    : pages.push("Home", "About Us", "Contact Us");
 
   const handleOpenNavMenu = (event) => {
+    console.log("handleOpenNavMenu", event);
     setAnchorElNav(event.currentTarget);
   };
+
+  const handleCloseNavMenu = (event, page) => {
+    setAnchorElNav(null);
+
+    switch (page) {
+      case "Sign In":
+        navigateTo("/Sign-in");
+        break;
+      case "Sign Up":
+        navigateTo("/Sign-up");
+        break;
+      case "Home":
+        navigateTo("/");
+        break;
+      case "About Us":
+        navigateTo("/About-us");
+      case "Contact Us":
+        navigateTo("/Contact-us");
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleOpenUserMenu = (event) => {
+    console.log("handleOpenUserMenu", event);
     setAnchorElUser(event.currentTarget);
   };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const navigateTo = useNavigate();
 
   const handleCloseUserMenu = (event, setting) => {
     setAnchorElUser(null);
@@ -71,109 +93,71 @@ function ResponsiveAppBar() {
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-              <Typography
-                onClick={()=> {!isAuthenticated ? navigateTo("/Sign In") : navigateTo("/")}}
-                variant="h6"
-                noWrap
-                component="a"
-                sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
-              >
-                HD
-              </Typography>
-
-
-
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
+            {/* MENU ICON */}
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open Navigation">
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Tooltip>
               <Menu
+                sx={{ mt: "45px", display: "block" }}
                 id="menu-appbar"
                 anchorEl={anchorElNav}
                 anchorOrigin={{
-                  vertical: "bottom",
+                  vertical: "top",
                   horizontal: "left",
                 }}
                 keepMounted
                 transformOrigin={{
                   vertical: "top",
-                  horizontal: "left",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
               >
-                {!isAuthenticated &&
-                  pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">
-                        <Link
-                          style={{ textDecoration: "none", color: "white" }}
-                          to={`/${page}`}
-                        >
-                          {page}
-                        </Link>
-                      </Typography>
-                    </MenuItem>
-                  ))}
+                {pages.map((page) => (
+                  <MenuItem
+                    key={page}
+                    onClick={(event) => handleCloseNavMenu(event, page)}
+                  >
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
               </Menu>
             </Box>
-            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-              <Typography
-                onClick={()=> {!isAuthenticated ? navigateTo("/Sign In") : navigateTo("/")}}
-                variant="h5"
-                noWrap
-                component="a"
-                  sx={{
-                    mr: 2,
-                    display: { xs: "flex", md: "none" },
-                    flexGrow: 1,
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    letterSpacing: ".3rem",
-                    color: "inherit",
-                    textDecoration: "none",
-                  }}
-                >
-                  HD
-              </Typography>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {!isAuthenticated &&
-                pages.map((page) => (
-                  <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    <Link
-                      style={{ textDecoration: "none", color: "white" }}
-                      to={`${page}`}
-                    >
-                      {page}
-                    </Link>
-                  </Button>
-                ))}
-            </Box>
+            {/* ICON AND ABBREVIATION */}
+            <AdbIcon sx={{ display: "block", mr: 1 }} />
+            <Typography
+              onClick={() => {
+                !isAuthenticated ? navigateTo("/Sign In") : navigateTo("/");
+              }}
+              variant="h5"
+              noWrap
+              component="a"
+              sx={{
+                mr: 2,
+                display: "block",
+                flexGrow: 1,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              HD
+            </Typography>
 
+            {/* USER SETTİNGS */}
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -181,7 +165,7 @@ function ResponsiveAppBar() {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: "45px" }}
+                sx={{ mt: "45px", display: "block" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
