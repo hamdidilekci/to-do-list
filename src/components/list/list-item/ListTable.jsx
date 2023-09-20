@@ -212,17 +212,22 @@ export default function ListTable() {
               handleClose={handleCloseModal}
               task={params.row}
             />
-            <Dialog open={reminderOpen} onClose={() => setReminderOpen(false)}>
+            <Dialog
+              fullWidth
+              open={reminderOpen}
+              onClose={() => setReminderOpen(false)}
+            >
               <DialogTitle>Set Reminder</DialogTitle>
               <DialogContent>
                 <TextField
-                  size="medium"
+                  fullWidth
                   label="Date and Time"
                   type="datetime-local"
                   value={reminderDate}
                   onChange={handleReminderDateChange}
                   InputLabelProps={{
                     shrink: true,
+                    sx: { color: "blue ", marginTop: "5px" },
                   }}
                 />
               </DialogContent>
@@ -256,46 +261,43 @@ export default function ListTable() {
   // show notifications if any
   let isToasting = false;
   useEffect(() => {
-      if (!isToasting) {
-        isToasting = true;
-        // get reminders
-        backend.get("reminder").then((dbReminders) => {
-          // Check if reminders array is not empty
-          if (dbReminders.length > 0 ) {
-            // Show toast notification for each reminder
-              dbReminders.forEach((reminder) => {
-
-                toast(`Reminder for task: ${reminder.taskTitle}`, {
-                  position: "top-right",
-                  autoClose: 5000, // Duration of the notification in milliseconds
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                });
-
-              });
-          }
-        });
-      }
-  }, [])
-
+    if (!isToasting) {
+      isToasting = true;
+      // get reminders
+      backend.get("reminder").then((dbReminders) => {
+        // Check if reminders array is not empty
+        if (dbReminders.length > 0) {
+          // Show toast notification for each reminder
+          dbReminders.forEach((reminder) => {
+            toast(`Reminder for task: ${reminder.taskTitle}`, {
+              position: "top-right",
+              autoClose: 5000, // Duration of the notification in milliseconds
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+          });
+        }
+      });
+    }
+  }, []);
 
   return (
     <>
       <DataGrid
-      autoHeight={true}
-      getRowHeight={() => 'auto'}
-      rows={rows}
-      columns={columns}
-      initialState={{
-        pagination: {
-          paginationModel: { page: 0, pageSize: 5 },
-        },
-      }}
-      pageSizeOptions={[5, 10]}
-    />
-    <ToastContainer />
+        autoHeight={true}
+        getRowHeight={() => "auto"}
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+      />
+      <ToastContainer />
     </>
   );
 }
