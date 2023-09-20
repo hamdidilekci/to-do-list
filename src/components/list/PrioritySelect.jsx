@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Grid,
-} from "@mui/material";
+import React from "react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const PrioritySelect = ({ priority, setPriority }) => {
   const handleChange = (event) => {
@@ -20,13 +12,11 @@ const PrioritySelect = ({ priority, setPriority }) => {
       <Select
         labelId="priority-select-label"
         id="priority-select"
+        name="priority"
         value={priority}
         label="Priority"
         onChange={handleChange}
       >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
         <MenuItem value={"High"}>High</MenuItem>
         <MenuItem value={"Medium"}>Medium</MenuItem>
         <MenuItem value={"Low"}>Low</MenuItem>
