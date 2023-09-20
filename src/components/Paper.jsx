@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import MuiPaper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
+import React from "react";
+import PropTypes from "prop-types";
+import MuiPaper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
 
 const PaperRoot = styled(MuiPaper, {
-  shouldForwardProp: (prop) => prop !== 'background' && prop !== 'padding',
+  shouldForwardProp: (prop) => prop !== "background" && prop !== "padding",
 })(({ theme, background, padding }) => ({
   backgroundColor: theme.palette.secondary[background],
   ...(padding && {
@@ -28,7 +28,6 @@ function Paper(props) {
 }
 
 Paper.propTypes = {
-  background: PropTypes.oneOf(['dark', 'light', 'main']).isRequired,
   /**
    * Override or extend the styles applied to the component.
    */
