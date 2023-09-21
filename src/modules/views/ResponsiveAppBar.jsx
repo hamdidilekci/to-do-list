@@ -29,7 +29,6 @@ function ResponsiveAppBar() {
     : pages.push("Home", "About Us", "Contact Us");
 
   const handleOpenNavMenu = (event) => {
-    console.log("handleOpenNavMenu", event);
     setAnchorElNav(event.currentTarget);
   };
 
@@ -57,7 +56,6 @@ function ResponsiveAppBar() {
   };
 
   const handleOpenUserMenu = (event) => {
-    console.log("handleOpenUserMenu", event);
     setAnchorElUser(event.currentTarget);
   };
 
