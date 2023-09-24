@@ -1,5 +1,5 @@
-import ListHeader from "./list-header/ListHeader.jsx";
-import ListTable from "./list-item/ListTable.jsx";
+import ListHeader from "./ListHeader.jsx";
+import ListTable from "./ListTable.jsx";
 
 import { Container } from "@mui/material";
 

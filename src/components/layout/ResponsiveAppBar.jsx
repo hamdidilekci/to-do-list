@@ -9,9 +9,9 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import AppBar from "../../components/AppBar.jsx";
-import Toolbar from "../../components/ToolBar.jsx";
-import Typography from "../../components/Typography.jsx";
+import AppBar from "../AppBar.jsx";
+import Toolbar from "../ToolBar.jsx";
+import Typography from "../Typography.jsx";
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);

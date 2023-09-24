@@ -106,6 +106,7 @@ class Backend {
         title: name,
         text: message,
       });
+      return;
     }
 
     const data = await response.json();

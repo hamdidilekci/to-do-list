@@ -1,8 +1,8 @@
 import React from "react";
-import List from "./components/list/List.jsx";
-import { ListItemsProvider } from "./components/list/ListItemsContext.jsx";
+import List from "../components/list/List.jsx";
+import { ListItemsProvider } from "../context/ListItemsContext.jsx";
 
-function App() {
+function Home() {
   return (
     <div style={{ minHeight: "700px" }}>
       <ListItemsProvider>
@@ -12,4 +12,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
