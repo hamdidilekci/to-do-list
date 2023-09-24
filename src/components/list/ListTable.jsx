@@ -199,9 +199,7 @@ export default function ListTable() {
             </Tooltip>
             <UpdateListItemModal
               open={editModalOpen}
-              onClose={() => {
-                handleCloseEditModal(selectedTaskToEdit);
-              }}
+              handleClose={handleCloseEditModal}
               task={selectedTaskToEdit}
             />
             <Tooltip title="Set Reminder">

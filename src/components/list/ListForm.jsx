@@ -24,7 +24,7 @@ const style = {
 };
 
 const ListForm = forwardRef((props, ref) => {
-  const { onClose, task } = props;
+  const { handleClose, task } = props;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -68,7 +68,7 @@ const ListForm = forwardRef((props, ref) => {
 
     if (response._id) {
       // Add new todo to the list
-      onClose({ ...response, id: response._id });
+      handleClose({ ...response, id: response._id });
     }
   };
 
@@ -139,7 +139,7 @@ const ListForm = forwardRef((props, ref) => {
             </Button>
           </Box>
           <Box sx={{ marginLeft: "auto" }}>
-            <Button variant="outlined" onClick={onClose}>
+            <Button variant="outlined" onClick={handleClose}>
               Cancel
             </Button>
           </Box>
