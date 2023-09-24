@@ -1,0 +1,123 @@
+env:
+  browser: true
+  es2021: true
+  node: true
+extends:
+  - "eslint:recommended"
+  - "plugin:jsx-a11y/recommended"
+  - "plugin:react/recommended"
+  - "plugin:react-hooks/recommended"
+parserOptions:
+  ecmaVersion: 12
+  sourceType: module
+rules:
+  array-bracket-spacing:
+    - 1
+    - never
+  arrow-body-style: 1
+  arrow-parens:
+    - 1
+    - as-needed
+  arrow-spacing: 1
+  block-spacing: 1
+  brace-style:
+    - 1
+    - stroustrup
+  camelcase: 1
+  comma-spacing: 1
+  comma-style:
+    - 1
+    - last
+  computed-property-spacing:
+    - 1
+    - never
+  consistent-return: 1
+  constructor-super: 1
+  curly: 1
+  default-case: 1
+  dot-location:
+    - 1
+    - property
+  dot-notation: 1
+  eol-last: 1
+  eqeqeq:
+    - 1
+    - allow-null
+  generator-star-spacing: 1
+  indent:
+    - 1
+    - 4
+  keyword-spacing: 1
+  linebreak-style:
+    - 1
+    - unix
+  new-cap:
+    - 1
+    - capIsNew: false
+  new-parens: 1
+  newline-per-chained-call: 1
+  no-array-constructor: 1
+  no-bitwise: 1
+  no-const-assign: 1
+  no-dupe-class-members: 1
+  no-else-return: 1
+  no-implicit-globals: 1
+  no-inline-comments: 1
+  no-lonely-if: 1
+  no-multiple-empty-lines:
+    - 1
+    - max: 1
+  no-multi-spaces: 1
+  no-nested-ternary: 1
+  no-new-object: 1
+  no-process-env: 1
+  no-return-assign: 1
+  no-self-assign: 1
+  no-self-compare: 1
+  no-sequences: 1
+  no-spaced-func: 1
+  no-this-before-super: 1
+  no-throw-literal: 1
+  no-trailing-spaces: 1
+  no-unmodified-loop-condition: 1
+  no-unused-expressions: 1
+  no-useless-call: 1
+  no-useless-concat: 1
+  no-unneeded-ternary: 1
+  no-unused-vars: 1
+  no-var: 1
+  no-whitespace-before-property: 1
+  object-curly-spacing:
+    - 1
+    - always
+  object-shorthand: 1
+  one-var-declaration-per-line: 1
+  operator-linebreak:
+    - 1
+    - after
+  padded-blocks:
+    - 1
+    - never
+  prefer-arrow-callback: 1
+  prefer-const: 1
+  prefer-rest-params: 1
+  prefer-template: 1
+  quotes:
+    - 1
+    - single
+  radix: 1
+  semi:
+    - 1
+    - always
+  space-before-blocks: 1
+  space-before-function-paren:
+    - 1
+    - never
+  space-in-parens:
+    - 1
+    - never
+  space-infix-ops: 1
+  space-unary-ops: 1
+  template-curly-spacing: 1
+  yoda: 1
+  react/prop-types: 0
