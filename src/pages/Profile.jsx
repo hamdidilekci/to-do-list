@@ -6,11 +6,11 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { Field, Form, FormSpy } from "react-final-form";
 import Typography from "../components/Typography.jsx";
-import AppForm from "../modules/views/AppForm.jsx";
-import RFTextField from "../modules/form/RFTextField.jsx";
-import FormButton from "../modules/form/FormButton.jsx";
-import FormFeedback from "../modules/form/FormFeedback.jsx";
-import { useBackend } from "../backend-context.jsx";
+import AppForm from "../components/layout/AppForm.jsx";
+import RFTextField from "../components/TextField.jsx";
+import FormButton from "../components/form/FormButton.jsx";
+import FormFeedback from "../components/form/FormFeedback.jsx";
+import { useBackend } from "../context/backend-context.jsx";
 import convertToBase64 from "../helpers/fileToBase64.js";
 
 const Profile = () => {
@@ -27,22 +27,10 @@ const Profile = () => {
     const file = fileInputRef.current.files[0];
     const base64File = await convertToBase64(file);
 
-    // append the file
-    const formData = new FormData();
-    formData.append("avatar", base64File);
-
-    // Add other form values to the FormData as needed
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    // Iterate through FormData entries and log them
-    for (const entry of formData.entries()) {
-      console.log(entry[0], entry[1]);
-    }
+    values.avatar = base64File;
 
     await backend
-      .put("auth/update-profile", formData)
+      .put("auth/update-profile", values)
       .then(() => {
         Swal.fire({
           icon: "success",

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Button from "../../components/Button.jsx";
+import Button from "../Button.jsx";
 import defer from "./defer.jsx";
 
 function FormButton(props) {

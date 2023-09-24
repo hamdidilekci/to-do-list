@@ -3,8 +3,6 @@ import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
-import TextField from "../../components/TextField.jsx";
-import Typography from "../../components/Typography.jsx";
 
 const footerContainerStyle = {
   backgroundColor: "#3874CB",

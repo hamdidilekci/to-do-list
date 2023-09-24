@@ -5,12 +5,12 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { Field, Form, FormSpy } from "react-final-form";
 import Typography from "../components/Typography.jsx";
-import AppForm from "../modules/views/AppForm.jsx";
-import { email, required } from "../modules/form/validation.jsx";
-import RFTextField from "../modules/form/RFTextField.jsx";
-import FormButton from "../modules/form/FormButton.jsx";
-import FormFeedback from "../modules/form/FormFeedback.jsx";
-import { useBackend } from "../backend-context.jsx";
+import AppForm from "../components/layout/AppForm.jsx";
+import { email, required } from "../components/form/validation.jsx";
+import RFTextField from "../components/form/RFTextField.jsx";
+import FormButton from "../components/form/FormButton.jsx";
+import FormFeedback from "../components/form/FormFeedback.jsx";
+import { useBackend } from "../context/backend-context.jsx";
 
 function SignUp() {
   const [sent, setSent] = React.useState(false);

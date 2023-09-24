@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Swal from "sweetalert2";
+// MUI imports
 import { DataGrid } from "@mui/x-data-grid";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
-import Brightness1Icon from "@mui/icons-material/Brightness1";
-import AlarmIcon from "@mui/icons-material/Alarm";
+import { DeleteForever, Edit, Brightness1, Alarm } from "@mui/icons-material";
+
 import {
-  IconButton,
-  Tooltip,
+  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
+  IconButton,
   TextField,
+  Tooltip,
 } from "@mui/material";
-import { useListItems } from "../ListItemsContext.jsx";
-import { useBackend } from "../../../backend-context.jsx";
+// contexts, modal and helper function
+import { useListItems } from "../../context/ListItemsContext.jsx";
+import { useBackend } from "../../context/backend-context.jsx";
 import UpdateListItemModal from "./UpdateListItemModal.jsx";
-import isCustomISO8601 from "./is-date-ISO8601.js";
-
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import isCustomISO8601 from "../../helpers/is-date-ISO8601.js";
 
 export default function ListTable() {
   const { rows, setRows } = useListItems();
@@ -34,24 +34,19 @@ export default function ListTable() {
   const [selectedTask, setSelectedTask] = useState("");
   const [reminderDate, setReminderDate] = useState("");
 
-  const handleEditModalOpen = (task) => {
-    setSelectedTaskToEdit(task);
-    setEditModalOpen(true);
-  };
-
-  const handleCloseEditModal = (task) => {
-    if (task) {
-      const _rows = rows.map((row) => {
-        if (row.id === task.id) {
-          return task;
+  const handleCloseEditModal = (editedTask) => {
+    if (editedTask) {
+      const updatedRows = rows.map((row) => {
+        if (row.id === editedTask.id) {
+          return editedTask;
         } else {
           return row;
         }
       });
-      setRows(_rows);
+      setRows(updatedRows);
     }
     setEditModalOpen(false);
-    setSelectedTask("");
+    setSelectedTaskToEdit("");
   };
 
   const handleSetReminder = (task) => {
@@ -170,7 +165,7 @@ export default function ListTable() {
                 toggleStatus(row);
               }}
             >
-              <Brightness1Icon />
+              <Brightness1 />
             </IconButton>
           </Tooltip>
         </span>
@@ -189,32 +184,35 @@ export default function ListTable() {
                   handleDeleteTask(row.id);
                 }}
               >
-                <DeleteForeverIcon sx={{ color: "red" }} />
+                <DeleteForever sx={{ color: "red" }} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit Task">
               <IconButton
                 onClick={() => {
-                  handleEditModalOpen(row);
+                  setSelectedTaskToEdit(row);
+                  setEditModalOpen(true);
                 }}
               >
-                <EditIcon sx={{ color: "green" }} />
+                <Edit sx={{ color: "green" }} />
               </IconButton>
             </Tooltip>
+            <UpdateListItemModal
+              open={editModalOpen}
+              onClose={() => {
+                handleCloseEditModal(selectedTaskToEdit);
+              }}
+              task={selectedTaskToEdit}
+            />
             <Tooltip title="Set Reminder">
               <IconButton
                 onClick={() => {
                   handleSetReminder(row);
                 }}
               >
-                <AlarmIcon sx={{ color: "blue" }} />
+                <Alarm sx={{ color: "blue" }} />
               </IconButton>
             </Tooltip>
-            <UpdateListItemModal
-              open={editModalOpen}
-              handleClose={handleCloseEditModal}
-              task={selectedTaskToEdit}
-            />
             <Dialog
               fullWidth
               open={reminderOpen}

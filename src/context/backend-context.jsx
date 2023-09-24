@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useRef } from "react";
 
 // helpers
-import Backend from "./backend.js";
+import Backend from "../helpers/backend.js";
 
 const BackendContext = createContext();
 
