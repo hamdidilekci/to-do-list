@@ -12,8 +12,11 @@ import AdbIcon from "@mui/icons-material/Adb";
 import AppBar from "../AppBar.jsx";
 import Toolbar from "../ToolBar.jsx";
 import Typography from "../Typography.jsx";
+import { useAvatar } from "../../context/AvatarContext.jsx";
 
 function ResponsiveAppBar() {
+  const { avatarUrl } = useAvatar;
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigateTo = useNavigate();
@@ -160,7 +163,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="#" />
+                  <Avatar alt="Avatar" src={avatarUrl} />
                 </IconButton>
               </Tooltip>
               <Menu
