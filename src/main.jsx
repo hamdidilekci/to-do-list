@@ -17,10 +17,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <BackendProvider>
         <ResponsiveAppBar />
         <Routes>
-          <Route path="Sign In" element={<SignIn />} />
-          <Route path="Sign Up" element={<SignUp />} />
+          <Route path="Sign-in" element={<SignIn />} />
+          <Route path="Sign-up" element={<SignUp />} />
           <Route path="ForgotPassword" element={<ForgotPassword />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="Profile" element={<Profile />} />
           <Route path="*" element={<App />} />
         </Routes>
         <AppFooter />

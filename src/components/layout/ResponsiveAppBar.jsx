@@ -75,11 +75,11 @@ function ResponsiveAppBar() {
         // Clear the token on logout
         localStorage.removeItem("token");
         // Navigate to the sign-in page
-        navigateTo("/Sign In");
+        navigateTo("/Sign-in");
         break;
       case "Login":
         // Navigate to the sign-in page
-        navigateTo("/Sign In");
+        navigateTo("/Sign-in");
         break;
       default:
         break;
@@ -136,7 +136,7 @@ function ResponsiveAppBar() {
             <AdbIcon sx={{ display: "block", mr: 1 }} />
             <Typography
               onClick={() => {
-                !isAuthenticated ? navigateTo("/Sign In") : navigateTo("/");
+                !isAuthenticated ? navigateTo("/Sign-in") : navigateTo("/");
               }}
               variant="h5"
               noWrap
