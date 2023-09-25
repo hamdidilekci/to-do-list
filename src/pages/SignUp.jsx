@@ -38,9 +38,12 @@ function SignUp() {
     // Send a POST request to backend endpoint with the form values
     await backend
       .post("auth/sign-up", values, false)
-      .then(() => {
+      .then((response) => {
+        // save user data and token to cache
+        localStorage.setItem("token", response.accessToken);
+        localStorage.setItem("user", JSON.stringify(response.user));
         // navigate to home page
-        navigateTo("http://localhost:5173/");
+        navigateTo("/Sign-in");
       })
       .finally(() => {
         setSent(false);
@@ -55,7 +58,7 @@ function SignUp() {
             Sign Up
           </Typography>
           <Typography variant="body2" align="center">
-            <Link href="/Sign In" underline="always">
+            <Link href="/Sign-in" underline="always">
               Already have an account?
             </Link>
           </Typography>
