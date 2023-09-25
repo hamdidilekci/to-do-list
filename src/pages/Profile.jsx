@@ -1,13 +1,12 @@
 import React from "react";
 import Swal from "sweetalert2";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { Field, Form, FormSpy } from "react-final-form";
 import Typography from "../components/Typography.jsx";
 import AppForm from "../components/layout/AppForm.jsx";
-import RFTextField from "../components/TextField.jsx";
+import RFTextField from "../components/form/RFTextField.jsx";
 import FormButton from "../components/form/FormButton.jsx";
 import FormFeedback from "../components/form/FormFeedback.jsx";
 import { useBackend } from "../context/backend-context.jsx";
@@ -25,18 +24,25 @@ const Profile = () => {
     setSent(true);
 
     const file = fileInputRef.current.files[0];
-    const base64File = await convertToBase64(file);
+    if (file) {
+      const base64File = await convertToBase64(file);
 
-    values.avatar = base64File;
+      values.avatar = base64File;
+    }
 
     await backend
       .put("auth/update-profile", values)
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Profile Updated Successfully",
-          timer: 3500,
-        });
+      .then((response) => {
+        if (response._id) {
+          Swal.fire({
+            icon: "success",
+            title: "Profile Updated Successfully",
+            timer: 3500,
+          });
+        } else {
+          setSent(false);
+          return;
+        }
       })
       .finally(() => {
         setSent(false);
@@ -50,9 +56,11 @@ const Profile = () => {
           General information
         </Typography>
       </>
-      <Form onSubmit={handleSubmit} subscription={{ submitting: true }}>
-        {({ handleSubmit: handleSubmit2, submitting }) => (
-          <Box component="form" onSubmit={handleSubmit2} sx={{ mt: 6 }}>
+      <Form
+        onSubmit={handleSubmit}
+        subscription={{ submitting: true }}
+        render={({ handleSubmit, submitting }) => (
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               {/* Add file input for avatar */}
               <Grid item xs={12} sm={12}>
@@ -86,7 +94,6 @@ const Profile = () => {
                   fullWidth
                   label="First name"
                   name="firstName"
-                  required
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -97,7 +104,6 @@ const Profile = () => {
                   fullWidth
                   label="Last name"
                   name="lastName"
-                  required
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -108,6 +114,7 @@ const Profile = () => {
                   fullWidth
                   label="Email"
                   name="email"
+                  type="email"
                   required
                 />
               </Grid>
@@ -130,9 +137,9 @@ const Profile = () => {
             >
               {submitting || sent ? "In progress…" : "Update"}
             </FormButton>
-          </Box>
+          </form>
         )}
-      </Form>
+      />
     </AppForm>
   );
 };
