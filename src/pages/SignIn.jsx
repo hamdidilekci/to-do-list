@@ -40,7 +40,7 @@ function SignIn() {
         localStorage.setItem("user", JSON.stringify(response.user));
 
         // Successful sign-in redirecting to the home page.
-        navigateTo("http://localhost:5173/");
+        navigateTo("/");
       })
       .finally(() => {
         setSent(false);
@@ -56,7 +56,7 @@ function SignIn() {
           </Typography>
           <Typography variant="body2" align="center">
             {"Not a member yet? "}
-            <Link href="/Sign Up" align="center" underline="always">
+            <Link href="/Sign-up" align="center" underline="always">
               Sign Up here
             </Link>
           </Typography>

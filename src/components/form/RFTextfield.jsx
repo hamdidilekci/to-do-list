@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import TextField from '../../components/TextField.jsx';
+import React from "react";
+import PropTypes from "prop-types";
+import TextField from "../TextField.jsx";
 
 function RFTextField(props) {
   const {
@@ -22,7 +22,7 @@ function RFTextField(props) {
         },
         ...InputProps,
       }}
-      helperText={touched ? error || submitError : ''}
+      helperText={touched ? error || submitError : ""}
       variant="standard"
     />
   );
