@@ -57,7 +57,7 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: name,
         text: message,
@@ -79,7 +79,7 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: name,
         text: message,
@@ -98,19 +98,16 @@ class Backend {
       headers,
       body: params ? JSON.stringify(params) : null,
     });
-
     if (!response.ok) {
       const { name, message } = await response.json();
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: name,
         text: message,
       });
-      return;
     }
 
     const data = await response.json();
-
     return data;
   }
 
@@ -122,7 +119,7 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: name,
         text: message,
