@@ -67,17 +67,20 @@ export default class AuthService {
   }
 
   static async update({ firstName, lastName, email, avatar }) {
-    const user = await User.findOneAndUpdate({
+    // check if user has vailid email
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new BadRequestError("Email not found");
+    }
+
+    // update user
+    const updatedUser = await User.findOneAndUpdate({
       email,
       firstName,
       lastName,
       avatar,
     });
 
-    if (!email) {
-      throw new BadRequestError("email not found");
-    }
-
-    return user;
+    return updatedUser;
   }
 }
