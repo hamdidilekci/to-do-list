@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Grid, Fab, Box, Card } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,15 +11,14 @@ import FormButton from "../components/form/FormButton.jsx";
 import FormFeedback from "../components/form/FormFeedback.jsx";
 import { useBackend } from "../context/backend-context.jsx";
 import convertToBase64 from "../helpers/fileToBase64.js";
-import { useAvatar } from "../context/AvatarContext.jsx";
 
 const Profile = () => {
   const [sent, setSent] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState(null);
-  const { setAvatarUrl, avatarUrl } = useAvatar();
 
   const fileInputRef = React.createRef();
 
+  const navigateTo = useNavigate();
   const backend = useBackend();
 
   // handle image input
@@ -40,13 +40,14 @@ const Profile = () => {
       const base64File = await convertToBase64(file);
 
       values.avatar = base64File;
-      setAvatarUrl(base64File);
     }
 
     await backend
       .put("auth/update-profile", values)
       .then((response) => {
         if (response._id) {
+          // update localstorage with new values and add storage event
+          localStorage.setItem("user", JSON.stringify(response));
           Swal.fire({
             icon: "success",
             title: "Profile Updated Successfully",
