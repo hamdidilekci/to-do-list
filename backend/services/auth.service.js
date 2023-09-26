@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-
+import crypto from "crypto";
 import User from "../models/user.model.js";
+import Token from "../models/token.model.js";
 
 // commons
 import { BadRequestError } from "../common/errors.js";
@@ -81,5 +82,73 @@ export default class AuthService {
     );
 
     return updatedUser;
+  }
+
+  // reset password request
+  static async resetPasswordRequest(email) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new BadRequestError("User not found");
+    }
+
+    const token = await Token.findOne({ userId: user._id });
+    if (token) {
+      await token.deleteOne();
+    }
+
+    // create random reset token
+    let resetToken = crypto.randomBytes(32).toString("hex");
+
+    // hash resetToken
+    const hashedToken = await hashPassword(resetToken);
+
+    await new Token({
+      userId: user._id,
+      token: hashedToken,
+      createdAt: Date.now(),
+    }).save();
+
+    const clientURL = process.env.CLIENT_URL;
+
+    const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user._id}`;
+
+    const mailObject = {
+      email: user.email,
+      subject: "Password Reset Request",
+      payload: { name: user.firstName, link: link },
+      template: "./template/request-reset-password.handlebars",
+    };
+
+    return mailObject;
+  }
+
+  // reset password api
+  static async resetPassword(userId, token, password) {
+    let passwordResetToken = await Token.findOne({ userId });
+    if (!passwordResetToken) {
+      throw new Error("Invalid or expired password reset token");
+    }
+    const isValid = await checkPassword(token, passwordResetToken.token);
+    if (!isValid) {
+      throw new Error("Invalid or expired password reset token");
+    }
+    const hash = await hashPassword(password);
+    await User.updateOne(
+      { _id: userId },
+      { $set: { password: hash } },
+      { new: true }
+    );
+    const user = await User.findById({ _id: userId });
+
+    // sendEmail(
+    //   user.email,
+    //   "Password Reset Successfully",
+    //   {
+    //     name: user.name,
+    //   },
+    //   "./template/resetPassword.handlebars"
+    // );
+    await passwordResetToken.deleteOne();
+    return user;
   }
 }
