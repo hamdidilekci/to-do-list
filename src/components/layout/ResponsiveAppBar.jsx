@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -12,16 +12,20 @@ import AdbIcon from "@mui/icons-material/Adb";
 import AppBar from "../AppBar.jsx";
 import Toolbar from "../ToolBar.jsx";
 import Typography from "../Typography.jsx";
-import { useAvatar } from "../../context/AvatarContext.jsx";
 
 function ResponsiveAppBar() {
-  const { avatarUrl } = useAvatar;
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [avatarImageSrc, setAvatarImageSrc] = useState(null);
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigateTo = useNavigate();
 
   const isAuthenticated = localStorage.getItem("token") !== null;
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setAvatarImageSrc(user.avatar);
+  }, [avatarImageSrc]);
 
   const settings = ["Profile", "Dashboard"];
   isAuthenticated ? settings.push("Logout") : settings.push("Login");
@@ -163,7 +167,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Avatar" src={avatarUrl} />
+                  <Avatar alt="Avatar" src={avatarImageSrc} />
                 </IconButton>
               </Tooltip>
               <Menu
