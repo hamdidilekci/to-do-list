@@ -10,24 +10,21 @@ import Profile from "./pages/Profile.jsx";
 import AppFooter from "./components/layout/AppFooter.jsx";
 import ResponsiveAppBar from "./components/layout/ResponsiveAppBar.jsx";
 import { BackendProvider } from "./context/backend-context.jsx";
-import { AvatarProvider } from "./context/AvatarContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AvatarProvider>
-        <BackendProvider>
-          <ResponsiveAppBar />
-          <Routes>
-            <Route path="Sign-in" element={<SignIn />} />
-            <Route path="Sign-up" element={<SignUp />} />
-            <Route path="ForgotPassword" element={<ForgotPassword />} />
-            <Route path="Profile" element={<Profile />} />
-            <Route path="*" element={<App />} />
-          </Routes>
-          <AppFooter />
-        </BackendProvider>
-      </AvatarProvider>
+      <BackendProvider>
+        <ResponsiveAppBar />
+        <Routes>
+          <Route path="Sign-in" element={<SignIn />} />
+          <Route path="Sign-up" element={<SignUp />} />
+          <Route path="ForgotPassword" element={<ForgotPassword />} />
+          <Route path="Profile" element={<Profile />} />
+          <Route path="*" element={<App />} />
+        </Routes>
+        <AppFooter />
+      </BackendProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
