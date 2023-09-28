@@ -7,6 +7,7 @@ import Token from "../models/token.model.js";
 import { BadRequestError } from "../common/errors.js";
 import checkPassword from "../common/check-password.js";
 import hashPassword from "../common/hash-password.js";
+import sendMail from "../common/send-mail.js";
 
 export default class AuthService {
   static async signIn({ email, password }) {
@@ -85,7 +86,7 @@ export default class AuthService {
   }
 
   // reset password request
-  static async resetPasswordRequest(email) {
+  static async resetPasswordRequest(email, res) {
     const user = await User.findOne({ email });
     if (!user) {
       throw new BadRequestError("User not found");
@@ -119,7 +120,15 @@ export default class AuthService {
       template: "./template/request-reset-password.handlebars",
     };
 
-    return mailObject;
+    await sendMail(
+      res,
+      mailObject.email,
+      mailObject.subject,
+      mailObject.payload,
+      mailObject.template
+    );
+
+    return mailObject.email;
   }
 
   // reset password api

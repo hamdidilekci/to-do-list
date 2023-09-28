@@ -1,5 +1,4 @@
 import express from "express";
-import sendMail from "../common/send-mail.js";
 import AuthService from "../services/auth.service.js";
 import handleError from "../middleware/handle-error.js";
 
@@ -42,9 +41,7 @@ privateRouter.put("/update-profile", async (req, res) => {
 privateRouter.post("/reset-password-request", async (req, res) => {
   try {
     const userEmail = req.body.email;
-    const { email, subject, payload, template } =
-      await AuthService.resetPasswordRequest(userEmail);
-    await sendMail(res, email, subject, payload, template);
+    const email = await AuthService.resetPasswordRequest(userEmail, res);
     res.send("Reset Link Sent To " + email);
   } catch (error) {
     handleError(error, req, res);

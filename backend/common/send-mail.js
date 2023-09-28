@@ -5,39 +5,54 @@ import path from "path";
 
 const sendEmail = async (res, email, subject, payload, template) => {
   try {
-    // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
       port: 465,
+      secure: true,
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
+        user: process.env.EMAIL_USERNAME || "dilekcihamdi@gmail.com",
+        pass: process.env.EMAIL_PASSWORD || "wuhfswuhdcfjhzuo",
       },
     });
 
-    const source = fs.readFileSync(path.join(__dirname, template), "utf8");
-    console.log("send mail - source", source);
+    // const source = fs.readFileSync(path.join(__dirname, template), "utf8");
+    // console.log("send mail - source", source);
+    // const compiledTemplate = handlebars.compile(source);
 
-    const compiledTemplate = handlebars.compile(source);
-    console.log("send mail - compiledTemplate", compiledTemplate);
+    const compiledTemplate = handlebars.compile(
+      `
+      <html>
+        <head>
+          <style></style>
+        </head>
+        <body>
+          <p>Hi {{name}},</p>
+          <p>You requested to reset your password.</p>
+          <p> Please, click the link below to reset your password</p>
+          <a href="https://{{link}}">Reset Password</a>
+        </body>
+      </html>`
+    );
+
+    const html = compiledTemplate(payload);
+
+    // console.log("send mail - compiledTemplate", compiledTemplate);
 
     const options = () => {
       return {
         from: process.env.FROM_EMAIL,
         to: email,
         subject: subject,
-        html: compiledTemplate(payload),
+        // html: compiledTemplate(payload),
+        html: html,
       };
     };
-    console.log("send mail - options", options);
 
     // Send email
     transporter.sendMail(options(), (error, info) => {
       if (error) {
-        console.log("send mail - error", error);
         return error;
       } else {
-        console.log("send mail - success", info);
         return res.status(200).json({
           success: true,
         });
