@@ -21,3 +21,14 @@ export function required(requiredFields, values) {
     {}
   );
 }
+
+export function checkPasswords(values) {
+  const { password, confirmPassword } = values;
+  const errors = {};
+
+  if (password !== confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  return errors;
+}
