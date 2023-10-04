@@ -92,6 +92,21 @@ export default class AuthService {
       throw new BadRequestError("User not found");
     }
 
+    // check if there is a token created in two minutes.
+    let now = new Date();
+
+    const twoMinutesAgo = now.setMinutes(now.getMinutes() - 2);
+
+    const tokenCreatedInLastTwoMinutes = await Token.findOne({
+      userId: user._id,
+      createdAt: { $gt: new Date(twoMinutesAgo) },
+    });
+
+    // if user send request in last 2 minutes, send error message
+    if (tokenCreatedInLastTwoMinutes) {
+      throw new BadRequestError("You can send one request per two minutes.");
+    }
+
     const token = await Token.findOne({ userId: user._id });
     if (token) {
       await token.deleteOne();
@@ -111,7 +126,7 @@ export default class AuthService {
 
     const clientURL = process.env.CLIENT_URL;
 
-    const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user._id}`;
+    const link = `${clientURL}/reset-password-verify?token=${resetToken}&id=${user._id}`;
 
     const mailObject = {
       email: user.email,
@@ -132,32 +147,43 @@ export default class AuthService {
   }
 
   // reset password api
-  static async resetPassword(userId, token, password) {
+  static async resetPasswordVerify(userId, token, password, res) {
     let passwordResetToken = await Token.findOne({ userId });
     if (!passwordResetToken) {
       throw new Error("Invalid or expired password reset token");
     }
+
     const isValid = await checkPassword(token, passwordResetToken.token);
     if (!isValid) {
       throw new Error("Invalid or expired password reset token");
     }
+
     const hash = await hashPassword(password);
+
     await User.updateOne(
       { _id: userId },
       { $set: { password: hash } },
       { new: true }
     );
+
     const user = await User.findById({ _id: userId });
 
-    // sendEmail(
-    //   user.email,
-    //   "Password Reset Successfully",
-    //   {
-    //     name: user.name,
-    //   },
-    //   "./template/resetPassword.handlebars"
+    // const mailObject = {
+    //   email: user.email,
+    //   subject: "Password Reset Successfully",
+    //   payload: { name: `${user.firstName} ${user.lastName}` },
+    //   template: "./template/request-reset-password.handlebars",
+    // };
+
+    // await sendMail(
+    //   res,
+    //   mailObject.email,
+    //   mailObject.subject,
+    //   mailObject.payload,
+    //   mailObject.template
     // );
+
     await passwordResetToken.deleteOne();
-    return user;
+    return user.email;
   }
 }
