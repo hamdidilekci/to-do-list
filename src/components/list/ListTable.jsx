@@ -59,28 +59,27 @@ export default function ListTable() {
   };
 
   const handleSaveReminder = async () => {
-    try {
-      // Validate the reminder date-time format
-      if (!isCustomISO8601(reminderDate)) {
-        // The input is not in the expected format
-        Swal.fire({
-          icon: "error",
-          title: "Invalid Format",
-          text: "Please enter a valid date and time in the format YYYY-MM-DDTHH:mm",
-        });
-        return;
-      }
+    // Validate the reminder date-time format
+    if (!isCustomISO8601(reminderDate)) {
+      // The input is not in the expected format
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Format",
+        text: "Please enter a valid date and time in the format YYYY-MM-DDTHH:mm",
+      });
+      return;
+    }
 
-      // Convert the selected reminderDate to UTC
-      const utcDate = new Date(reminderDate);
+    // Convert the selected reminderDate to UTC
+    const utcDate = new Date(reminderDate);
 
-      // Continue with saving the reminder...
-      const response = await backend.post("reminder", {
+    // Continue with saving the reminder...
+    await backend
+      .post("reminder", {
         taskId: selectedTask.id,
         reminderDate: utcDate,
-      });
-
-      if (response._id) {
+      })
+      .then(() => {
         setReminderOpen(false);
         // Success message
         Swal.fire({
@@ -88,46 +87,45 @@ export default function ListTable() {
           title: "Success!",
           text: "Reminder set!",
         });
-      }
-    } catch (error) {
-      // Handle errors
-      console.error("Error setting reminder:", error);
-    }
+      });
   };
 
   const handleDeleteTask = async (id) => {
-    const response = await backend.delete(`todos/${id}`);
-    if (response._id) {
-      const _rows = [...rows];
+    await backend.delete(`todos/${id}`).then((response) => {
+      if (response) {
+        const _rows = [...rows];
 
-      // remove todo from list
-      setRows(_rows.filter((row) => row.id != id));
+        // remove todo from list
+        setRows(_rows.filter((row) => row.id != id));
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Task deleted!",
-      });
-    }
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Task deleted!",
+        });
+      }
+    });
   };
 
   const toggleStatus = async (task) => {
-    const response = await backend.post(`todos/${task.id}`, {
-      completed: !task.completed,
-    });
+    await backend
+      .post(`todos/${task.id}`, {
+        completed: !task.completed,
+      })
+      .then((response) => {
+        if (response) {
+          // toggle status
+          const _rows = rows.map((row) => {
+            if (row.id === response._id) {
+              return { ...response, id: response._id };
+            } else {
+              return row;
+            }
+          });
 
-    if (response._id) {
-      // toggle status
-      const _rows = rows.map((row) => {
-        if (row.id === response._id) {
-          return { ...response, id: response._id };
-        } else {
-          return row;
+          setRows(_rows);
         }
       });
-
-      setRows(_rows);
-    }
   };
 
   const columns = [

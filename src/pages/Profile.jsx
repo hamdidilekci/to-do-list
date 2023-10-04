@@ -42,25 +42,18 @@ const Profile = () => {
       values.avatar = base64File;
     }
 
-    await backend
-      .put("auth/update-profile", values)
-      .then((response) => {
-        if (response._id) {
-          // update localstorage with new values and add storage event
-          localStorage.setItem("user", JSON.stringify(response));
-          Swal.fire({
-            icon: "success",
-            title: "Profile Updated Successfully",
-            timer: 3500,
-          });
-        } else {
-          setSent(false);
-          return;
-        }
-      })
-      .finally(() => {
-        setSent(false);
-      });
+    await backend.put("auth/update-profile", values).then((response) => {
+      if (response) {
+        // update localstorage with new values and add storage event
+        localStorage.setItem("user", JSON.stringify(response));
+        Swal.fire({
+          icon: "success",
+          title: "Profile Updated Successfully",
+          timer: 3500,
+        });
+      }
+      setSent(false);
+    });
   };
 
   return (

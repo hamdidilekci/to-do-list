@@ -32,19 +32,17 @@ function SignIn() {
   const handleSubmit = async (values) => {
     setSent(true);
     // Send a POST request to backend endpoint with the form values
-    await backend
-      .post("auth/sign-in", values, false)
-      .then((response) => {
+    await backend.post("auth/sign-in", values, false).then((response) => {
+      if (response) {
         // save user data and token to cache
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("user", JSON.stringify(response.user));
 
         // Successful sign-in redirecting to the home page.
         navigateTo("/");
-      })
-      .finally(() => {
-        setSent(false);
-      });
+      }
+      setSent(false);
+    });
   };
 
   return (
@@ -119,7 +117,7 @@ function SignIn() {
           )}
         </Form>
         <Typography align="center">
-          <Link underline="always" href="/ForgotPassword">
+          <Link underline="always" href="/Forgot-password">
             Forgot password?
           </Link>
         </Typography>
