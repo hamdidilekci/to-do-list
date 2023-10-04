@@ -49,19 +49,20 @@ function ListHeader() {
     };
 
     // Send a POST request to backend endpoint with the form values
-    const response = await backend.post("todos", formData);
+    const response = await backend.post("todos", formData).then((response) => {
+      if (response) {
+        // Add new todo to the list
+        setRows([...rows, { ...response, id: response._id }]);
 
-    if (response._id) {
-      // Add new todo to the list
-      setRows([...rows, { ...response, id: response._id }]);
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Todo item created!",
+        });
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Todo item created!",
-      });
-      resetForm();
-    }
+        resetForm();
+      }
+    });
   };
 
   return (

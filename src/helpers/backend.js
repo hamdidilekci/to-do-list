@@ -57,11 +57,14 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      return Swal.fire({
+
+      Swal.fire({
         icon: "error",
         title: name,
         text: message,
       });
+
+      return;
     }
 
     const data = await response.json();
@@ -79,11 +82,14 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      return Swal.fire({
+
+      Swal.fire({
         icon: "error",
         title: name,
         text: message,
       });
+
+      return;
     }
 
     const data = await response.json();
@@ -100,14 +106,18 @@ class Backend {
     });
     if (!response.ok) {
       const { name, message } = await response.json();
-      return Swal.fire({
+
+      Swal.fire({
         icon: "error",
         title: name,
         text: message,
       });
+
+      return;
     }
 
     const data = await response.json();
+
     return data;
   }
 
@@ -119,11 +129,14 @@ class Backend {
 
     if (!response.ok) {
       const { name, message } = await response.json();
-      return Swal.fire({
+
+      Swal.fire({
         icon: "error",
         title: name,
         text: message,
       });
+
+      return;
     }
 
     const data = await response.json();

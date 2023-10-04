@@ -64,12 +64,12 @@ const ListForm = forwardRef((props, ref) => {
     };
 
     // Send a POST request to backend endpoint with the form values
-    const response = await backend.post(`todos/${task.id}`, formData);
-
-    if (response._id) {
-      // Add new todo to the list
-      handleClose({ ...response, id: response._id });
-    }
+    await backend.post(`todos/${task.id}`, formData).then((response) => {
+      if (response) {
+        // Add new todo to the list
+        handleClose({ ...response, id: response._id });
+      }
+    });
   };
 
   return (
