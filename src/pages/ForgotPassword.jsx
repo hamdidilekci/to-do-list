@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import Swal from "sweetalert2";
 import { Field, Form, FormSpy } from "react-final-form";
 import Box from "@mui/material/Box";
 import Typography from "../components/Typography.jsx";
@@ -7,9 +8,11 @@ import { email, required } from "../components/form/validation.jsx";
 import RFTextField from "../components/form/RFTextField.jsx";
 import FormButton from "../components/form/FormButton.jsx";
 import FormFeedback from "../components/form/FormFeedback.jsx";
+import { useBackend } from "../context/backend-context.jsx";
 
 function ForgotPassword() {
-  const [sent, setSent] = React.useState(false);
+  const [sent, setSent] = useState(false);
+  const backend = useBackend();
 
   const validate = (values) => {
     const errors = required(["email"], values);
@@ -24,8 +27,21 @@ function ForgotPassword() {
     return errors;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (values) => {
     setSent(true);
+    // send request to reset password request api
+    await backend
+      .post("auth/reset-password-request", values)
+      .then((response) => {
+        if (response) {
+          Swal.fire({
+            icon: "success",
+            title: `İf you have valid email (${response.email}), you will receive a reset password link!`,
+            timer: 3500,
+          });
+        }
+        setSent(false);
+      });
   };
 
   return (
