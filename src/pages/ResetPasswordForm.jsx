@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Field, Form, FormSpy } from "react-final-form";
 import Box from "@mui/material/Box";
@@ -14,6 +15,22 @@ function ResetPasswordForm() {
   const [sent, setSent] = useState(false);
   const backend = useBackend();
 
+  const [searchParams] = useSearchParams();
+  const navigateTo = useNavigate();
+
+  let token, userId;
+  // Extract token and userId from URL
+  for (const [key, value] of searchParams.entries()) {
+    switch (key) {
+      case "token":
+        token = value;
+        break;
+      case "id":
+        userId = value;
+        break;
+    }
+  }
+
   const validate = (values) => {
     const errors = required(["password", "confirmPassword"], values);
 
@@ -25,17 +42,24 @@ function ResetPasswordForm() {
 
   const handleSubmit = async (values) => {
     setSent(true);
-    console.log("Submit", values);
+    // Include token and id in the request payload
+    const requestData = {
+      ...values,
+      token,
+      userId,
+    };
+
     // send request to reset password request api
     await backend
-      .post("auth/reset-password-verify", values)
+      .post("auth/reset-password-verify", requestData)
       .then((response) => {
         if (response) {
           Swal.fire({
             icon: "success",
-            title: `İf you have valid email (${response.email}), you will receive a reset password link!`,
+            title: `Your user (${response.userEmail}) password changed successfully!`,
             timer: 3500,
           });
+          navigateTo("/Sign-in");
         }
         setSent(false);
       });
