@@ -27,22 +27,40 @@ publicRouter.post("/sign-up", async (req, res) => {
   }
 });
 
-// update user profile
-privateRouter.put("/update-profile", async (req, res) => {
+// reset password request
+publicRouter.post("/reset-password-request", async (req, res) => {
   try {
-    const user = await AuthService.update(req.user, req.body);
-    res.send(user);
+    const userEmail = req.body.email;
+    const email = await AuthService.resetPasswordRequest(userEmail, res);
+    res.send({ email });
   } catch (error) {
     handleError(error, req, res);
   }
 });
 
-// reset password
-privateRouter.post("/reset-password-request", async (req, res) => {
+// reset password verify
+publicRouter.post("/reset-password-verify", async (req, res) => {
   try {
-    const userEmail = req.body.email;
-    const email = await AuthService.resetPasswordRequest(userEmail, res);
-    res.send("Reset Link Sent To " + email);
+    const { token, userId, password } = req.body;
+
+    const userEmail = await AuthService.resetPasswordVerify(
+      userId,
+      token,
+      password,
+      res
+    );
+
+    res.send({ userEmail });
+  } catch (error) {
+    handleError(error, req, res);
+  }
+});
+
+// update user profile
+privateRouter.put("/update-profile", async (req, res) => {
+  try {
+    const user = await AuthService.update(req.user, req.body);
+    res.send(user);
   } catch (error) {
     handleError(error, req, res);
   }
