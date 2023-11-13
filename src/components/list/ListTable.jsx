@@ -259,26 +259,28 @@ export default function ListTable() {
   // show notifications if any
   let isToasting = false;
   useEffect(() => {
-    if (!isToasting) {
-      isToasting = true;
-      // get reminders
-      backend.get("reminder").then((dbReminders) => {
-        // Check if reminders array is not empty
-        if (dbReminders.length > 0) {
-          // Show toast notification for each reminder
-          dbReminders.forEach((reminder) => {
-            toast(`Reminder for task: ${reminder.taskTitle}`, {
-              position: "top-right",
-              autoClose: 5000, // Duration of the notification in milliseconds
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
+    const interval = setInterval(() => {
+      if (!isToasting) {
+        isToasting = true;
+        // get reminders
+        backend.get("reminder").then((dbReminders) => {
+          // Check if reminders array is not empty
+          if (dbReminders.length > 0) {
+            // Show toast notification for each reminder
+            dbReminders.forEach((reminder) => {
+              toast(`Reminder for task: ${reminder.taskTitle}`, {
+                position: "top-right",
+                autoClose: 5000, // Duration of the notification in milliseconds
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              });
             });
-          });
-        }
-      });
-    }
+          }
+        });
+      }
+    }, 60000);
   }, []);
 
   return (
