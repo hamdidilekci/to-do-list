@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPasswordForm from "./pages/ResetPasswordForm.jsx";
 import Profile from "./pages/Profile.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
 import AppFooter from "./components/layout/AppFooter.jsx";
 import ResponsiveAppBar from "./components/layout/ResponsiveAppBar.jsx";
 import { BackendProvider } from "./context/backend-context.jsx";
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="Forgot-password" element={<ForgotPassword />} />
           <Route path="Reset-password-verify" element={<ResetPasswordForm />} />
           <Route path="Profile" element={<Profile />} />
+          <Route path="About-us" element={<AboutUs />} />
           <Route path="*" element={<App />} />
         </Routes>
         <AppFooter />

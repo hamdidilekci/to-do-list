@@ -32,7 +32,7 @@ function ResponsiveAppBar() {
 
   let pages = [];
   !isAuthenticated
-    ? pages.push("Sign In", "Sign Up")
+    ? pages.push("Sign In", "Sign Up", "About Us", "Contact Us")
     : pages.push("Home", "About Us", "Contact Us");
 
   const handleOpenNavMenu = (event) => {
@@ -58,6 +58,7 @@ function ResponsiveAppBar() {
         navigateTo("/Contact-us");
         break;
       default:
+        navigateTo("/About-us");
         break;
     }
   };
